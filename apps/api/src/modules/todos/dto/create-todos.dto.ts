@@ -26,10 +26,13 @@ export class CreateTodoDto {
   @IsBoolean()
   completed: boolean;
 
-  @ApiProperty({ description: 'Due date', example: '2024-12-31T23:59:59.000Z' })
-  @IsDateString()
+  @ApiProperty({
+    description: 'Due date (YYYY-MM-DD or ISO string)',
+    example: '2024-12-31',
+  })
+  @IsString()
   @IsNotEmpty()
-  dueDate: Date;
+  dueDate: string | Date;
 
   @ApiProperty({ description: 'Link URL', example: 'https://example.com' })
   @IsString()

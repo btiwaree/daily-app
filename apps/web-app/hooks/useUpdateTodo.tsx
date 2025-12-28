@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import dayjs from 'dayjs';
 
 import { useApiClient } from '@/api-client';
 
@@ -15,9 +16,11 @@ export const useUpdateTodo = () => {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, completed, dueDate }: UpdateTodoParams) => {
+      // Format date as YYYY-MM-DD to avoid timezone issues
+      const dateString = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : undefined;
       const response = await apiClient.patch(`/todos/${id}`, {
         completed,
-        dueDate: dueDate?.toISOString(),
+        dueDate: dateString,
       });
       return response.data;
     },

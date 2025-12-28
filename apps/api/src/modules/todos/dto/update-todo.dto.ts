@@ -1,7 +1,7 @@
 import {
   IsBoolean,
-  IsDateString,
   IsOptional,
+  IsString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -16,12 +16,12 @@ export class UpdateTodoDto {
   completed?: boolean;
 
   @ApiProperty({
-    description: 'Due date',
-    example: '2024-12-31T23:59:59.000Z',
+    description: 'Due date (YYYY-MM-DD or ISO string)',
+    example: '2024-12-31',
     required: false,
   })
   @IsOptional()
-  @IsDateString()
-  dueDate?: Date;
+  @IsString()
+  dueDate?: string | Date;
 }
 

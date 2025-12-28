@@ -30,9 +30,19 @@ export class TodosService {
   }
 
   async create(createTodoDto: CreateTodoDto): Promise<Todo> {
-    const dueDate = new Date(createTodoDto.dueDate);
-    // set hour to 23:59:59
-    dueDate.setHours(23, 59, 59, 999);
+    // Handle both date strings (YYYY-MM-DD) and ISO strings
+    let dueDate: Date;
+    if (typeof createTodoDto.dueDate === 'string') {
+      // If it's a date string like "2025-12-28", parse it and set to end of day in UTC
+      const dateStr = createTodoDto.dueDate.split('T')[0]; // Extract date part if ISO string
+      const [year, month, day] = dateStr.split('-').map(Number);
+      // Create date in UTC at 23:59:59.999
+      dueDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+    } else {
+      dueDate = new Date(createTodoDto.dueDate);
+      // set hour to 23:59:59 in UTC
+      dueDate.setUTCHours(23, 59, 59, 999);
+    }
     createTodoDto.dueDate = dueDate;
 
     const todo = this.todosRepository.create(createTodoDto);
@@ -71,9 +81,19 @@ export class TodosService {
     }
 
     if (updateTodoDto.dueDate !== undefined) {
-      const dueDate = new Date(updateTodoDto.dueDate);
-      // set hour to 23:59:59
-      dueDate.setHours(23, 59, 59, 999);
+      // Handle both date strings (YYYY-MM-DD) and ISO strings
+      let dueDate: Date;
+      if (typeof updateTodoDto.dueDate === 'string') {
+        // If it's a date string like "2025-12-28", parse it and set to end of day in UTC
+        const dateStr = updateTodoDto.dueDate.split('T')[0]; // Extract date part if ISO string
+        const [year, month, day] = dateStr.split('-').map(Number);
+        // Create date in UTC at 23:59:59.999
+        dueDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+      } else {
+        dueDate = new Date(updateTodoDto.dueDate);
+        // set hour to 23:59:59 in UTC
+        dueDate.setUTCHours(23, 59, 59, 999);
+      }
       todo.dueDate = dueDate;
     }
 

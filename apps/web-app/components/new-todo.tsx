@@ -18,6 +18,7 @@ import { Calendar } from './ui/calendar';
 import { Plus } from 'lucide-react';
 import { useAddTodo } from '@/hooks/useAddTodo';
 import { LinkType } from '@/utils/linkType';
+import dayjs from 'dayjs';
 
 interface TodoFormData {
   title: string;
@@ -53,12 +54,16 @@ export const NewTodo = () => {
       return;
     }
 
+    // Format date as YYYY-MM-DD to avoid timezone issues
+    // The backend will set it to 23:59:59 UTC for that date
+    const dateString = dayjs(data.dueDate).format('YYYY-MM-DD');
+
     addTodo(
       {
         title: data.title,
         description: data.description,
         completed: false,
-        dueDate: data.dueDate.toISOString(),
+        dueDate: dateString,
         linkUrl: data.linkUrl,
         linkType: data.linkType,
         userId,
