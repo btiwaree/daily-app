@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSettings } from './entities/user-settings.entity';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { ActivityLogsService } from '../activity-logs/activity-logs.service';
+import { ActionType } from '../activity-logs/enums/action-type.enum';
+import { EntityType } from '../activity-logs/enums/entity-type.enum';
 
 @Injectable()
 export class UserSettingsService {
   constructor(
     @InjectRepository(UserSettings)
     private userSettingsRepository: Repository<UserSettings>,
+    private activityLogsService: ActivityLogsService,
   ) {}
 
   async getSettings(userId: string): Promise<UserSettings> {
@@ -37,6 +41,9 @@ export class UserSettingsService {
       where: { userId },
     });
 
+    const previousCheckInTime = settings?.preferredCheckInTime;
+    const previousCheckOutTime = settings?.preferredCheckOutTime;
+
     if (!settings) {
       settings = this.userSettingsRepository.create({
         userId,
@@ -54,7 +61,32 @@ export class UserSettingsService {
       }
     }
 
-    return this.userSettingsRepository.save(settings);
+    const savedSettings = await this.userSettingsRepository.save(settings);
+
+    // Log settings update if any changes were made
+    const hasChanges =
+      (updateSettingsDto.preferredCheckInTime !== undefined &&
+        previousCheckInTime !== savedSettings.preferredCheckInTime) ||
+      (updateSettingsDto.preferredCheckOutTime !== undefined &&
+        previousCheckOutTime !== savedSettings.preferredCheckOutTime);
+
+    if (hasChanges) {
+      await this.activityLogsService.createLog({
+        userId: savedSettings.userId,
+        actionType: ActionType.UPDATE_SETTINGS,
+        entityType: EntityType.USER_SETTINGS,
+        entityId: savedSettings.id,
+        entityTitle: 'User Settings',
+        metadata: {
+          previousCheckInTime: previousCheckInTime,
+          newCheckInTime: savedSettings.preferredCheckInTime,
+          previousCheckOutTime: previousCheckOutTime,
+          newCheckOutTime: savedSettings.preferredCheckOutTime,
+        },
+      });
+    }
+
+    return savedSettings;
   }
 }
 

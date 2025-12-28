@@ -10,6 +10,9 @@ import { Todo } from '../todos/entities/todos.entities';
 import { CheckStatusDto } from './dto/check-status.dto';
 import { CheckInResponseDto } from './dto/check-in.dto';
 import { CheckOutResponseDto } from './dto/check-out.dto';
+import { ActivityLogsService } from '../activity-logs/activity-logs.service';
+import { ActionType } from '../activity-logs/enums/action-type.enum';
+import { EntityType } from '../activity-logs/enums/entity-type.enum';
 
 @Injectable()
 export class CheckInOutService {
@@ -18,6 +21,7 @@ export class CheckInOutService {
     private checkInOutRepository: Repository<CheckInOut>,
     @InjectRepository(Todo)
     private todosRepository: Repository<Todo>,
+    private activityLogsService: ActivityLogsService,
   ) {}
 
   async checkIn(userId: string): Promise<CheckInResponseDto> {
@@ -75,6 +79,15 @@ export class CheckInOutService {
 
     const savedCheckInOut = await this.checkInOutRepository.save(checkInOut);
 
+    // Log check-in action
+    await this.activityLogsService.createLog({
+      userId: savedCheckInOut.userId,
+      actionType: ActionType.CHECK_IN,
+      entityType: EntityType.CHECK_IN_OUT,
+      entityId: savedCheckInOut.id,
+      entityTitle: 'Check-in',
+    });
+
     return {
       checkInOut: {
         id: savedCheckInOut.id,
@@ -119,6 +132,15 @@ export class CheckInOutService {
     // Update check-out time
     checkInOut.checkOutTime = new Date();
     const updatedCheckInOut = await this.checkInOutRepository.save(checkInOut);
+
+    // Log check-out action
+    await this.activityLogsService.createLog({
+      userId: updatedCheckInOut.userId,
+      actionType: ActionType.CHECK_OUT,
+      entityType: EntityType.CHECK_IN_OUT,
+      entityId: updatedCheckInOut.id,
+      entityTitle: 'Check-out',
+    });
 
     return {
       checkInOut: {

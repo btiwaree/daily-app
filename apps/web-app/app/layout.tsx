@@ -64,6 +64,11 @@ export default function RootLayout({
                 <SignedIn>
                   <div className="flex items-center gap-4">
                     <Logo href="/dashboard" />
+                    <Link href="/activity">
+                      <Button variant="ghost" size="sm">
+                        Activity
+                      </Button>
+                    </Link>
                     <Link href="/settings">
                       <Button variant="ghost" size="sm">
                         Settings

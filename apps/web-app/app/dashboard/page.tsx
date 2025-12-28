@@ -1,17 +1,25 @@
 'use client';
 
-import { CalendarIcon, ExternalLinkIcon, LogOutIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  CheckIcon,
+  ExternalLinkIcon,
+  LogOutIcon,
+  ActivityIcon,
+} from 'lucide-react';
 import * as React from 'react';
 
 import { CheckInModal } from '@/components/check-in-modal';
 import { CheckOutModal } from '@/components/check-out-modal';
 import { NewTodo } from '@/components/new-todo';
+import { ActivityLogSheet } from '@/components/activity-log-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCheckInStatus } from '@/hooks/useCheckIn';
 import { useGetTodos } from '@/hooks/useGetTodos';
+import { useUpdateTodo } from '@/hooks/useUpdateTodo';
 import { formatDate, isToday } from '@/utils/date';
 import {
   getLinkTypeBadgeVariant,
@@ -31,11 +39,16 @@ interface Todo {
   updatedAt: string;
 }
 
-const Test = () => {
+const TodosDashboard = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { data: todos, isLoading: isTodosLoading } = useGetTodos(date);
   const [checkInModalOpen, setCheckInModalOpen] = React.useState(false);
   const [checkOutModalOpen, setCheckOutModalOpen] = React.useState(false);
+  const [activityLogSheetOpen, setActivityLogSheetOpen] = React.useState(false);
+  const [updatingTodoId, setUpdatingTodoId] = React.useState<string | null>(
+    null,
+  );
+  const { updateTodoAsync, isUpdating } = useUpdateTodo();
 
   const isDateToday = isToday(date);
   const today = new Date();
@@ -66,6 +79,23 @@ const Test = () => {
     setCheckOutModalOpen(false);
   };
 
+  const handleToggleComplete = async (
+    todoId: string,
+    currentStatus: boolean,
+  ) => {
+    setUpdatingTodoId(todoId);
+    try {
+      await updateTodoAsync({ id: todoId, completed: !currentStatus });
+    } catch {
+      // Error is already handled by the hook's onError callback
+    } finally {
+      // Clear updating state after a short delay to allow for smooth transition
+      setTimeout(() => {
+        setUpdatingTodoId(null);
+      }, 300);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center gap-4 p-4 relative">
       {/* Blur overlay when check-in not complete */}
@@ -83,6 +113,15 @@ const Test = () => {
               </span>
             </h2>
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setActivityLogSheetOpen(true)}
+                className="flex items-center gap-2"
+                aria-label="View activity log"
+              >
+                <ActivityIcon className="h-4 w-4" />
+              </Button>
               <NewTodo />
               {/* Check-out button */}
               {hasCheckedIn && !hasCheckedOut && isDateToday && (
@@ -132,53 +171,122 @@ const Test = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {(todos as Todo[]).map((todo) => (
-                <div
-                  key={todo.id}
-                  className={`p-5 border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 bg-card ${
-                    !hasCheckedOut &&
-                    isDateToday &&
-                    !todo.completed &&
-                    isAfter4PM
-                      ? 'border-red-500 border-2'
-                      : ''
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-lg text-foreground">
-                      {todo.title}
-                    </h3>
-                    <Badge variant={getLinkTypeBadgeVariant(todo.linkType)}>
-                      {getLinkTypeDisplayName(todo.linkType)}
-                    </Badge>
-                  </div>
+              {(todos as Todo[]).map((todo) => {
+                const isUpdatingThisTodo = updatingTodoId === todo.id;
 
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {todo.description}
-                  </p>
+                // Show skeleton loading state for the todo being updated
+                if (isUpdatingThisTodo) {
+                  return (
+                    <div
+                      key={todo.id}
+                      className="p-5 border rounded-lg shadow-sm bg-card"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-5 w-20 rounded-md" />
+                      </div>
 
-                  <div className="flex items-center justify-between flex-wrap gap-3 pt-3 border-t">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CalendarIcon className="h-4 w-4" />
-                      <span>
-                        Due: {formatDate(new Date(todo.dueDate), 'MMM D, YYYY')}
-                      </span>
+                      <div className="space-y-2 mb-3">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-3/4" />
+                      </div>
+
+                      <div className="flex items-center justify-between flex-wrap gap-3 pt-3 border-t">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-4 w-4 rounded" />
+                          <Skeleton className="h-4 w-32" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={todo.id}
+                    className={`p-5 border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 bg-card ${
+                      !hasCheckedOut &&
+                      isDateToday &&
+                      !todo.completed &&
+                      isAfter4PM
+                        ? 'border-red-500 border-2'
+                        : ''
+                    } ${todo.completed ? 'opacity-60' : ''}`}
+                  >
+                    <div className="flex items-start justify-between mb-3 gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-6 w-6 p-0 rounded-md ${
+                            todo.completed
+                              ? 'bg-primary text-primary-foreground'
+                              : 'border border-border hover:bg-accent'
+                          }`}
+                          onClick={() =>
+                            handleToggleComplete(todo.id, todo.completed)
+                          }
+                          disabled={isUpdating}
+                          aria-label={
+                            todo.completed
+                              ? 'Mark as incomplete'
+                              : 'Mark as complete'
+                          }
+                        >
+                          {todo.completed && <CheckIcon className="h-4 w-4" />}
+                        </Button>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3
+                              className={`font-semibold text-lg ${
+                                todo.completed
+                                  ? 'line-through text-muted-foreground'
+                                  : 'text-foreground'
+                              }`}
+                            >
+                              {todo.title}
+                            </h3>
+                            {todo.linkUrl && (
+                              <a
+                                href={todo.linkUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLinkIcon className="h-4 w-4" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant={getLinkTypeBadgeVariant(todo.linkType)}>
+                        {getLinkTypeDisplayName(todo.linkType)}
+                      </Badge>
                     </div>
 
-                    {todo.linkUrl && (
-                      <a
-                        href={todo.linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
-                      >
-                        <span>View Link</span>
-                        <ExternalLinkIcon className="h-4 w-4" />
-                      </a>
-                    )}
+                    <p
+                      className={`mb-4 leading-relaxed ${
+                        todo.completed
+                          ? 'line-through text-muted-foreground'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      {todo.description}
+                    </p>
+
+                    <div className="flex items-center gap-3 pt-3 border-t">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CalendarIcon className="h-4 w-4" />
+                        <span>
+                          Due:{' '}
+                          {formatDate(new Date(todo.dueDate), 'MMM D, YYYY')}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -208,8 +316,14 @@ const Test = () => {
         onOpenChange={setCheckOutModalOpen}
         onComplete={handleCheckOutComplete}
       />
+
+      {/* Activity Log Sheet */}
+      <ActivityLogSheet
+        open={activityLogSheetOpen}
+        onOpenChange={setActivityLogSheetOpen}
+      />
     </div>
   );
 };
 
-export default Test;
+export default TodosDashboard;

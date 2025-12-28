@@ -4,12 +4,16 @@ import { Raw, Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todos.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todos.entities';
+import { ActivityLogsService } from '../activity-logs/activity-logs.service';
+import { ActionType } from '../activity-logs/enums/action-type.enum';
+import { EntityType } from '../activity-logs/enums/entity-type.enum';
 
 @Injectable()
 export class TodosService {
   constructor(
     @InjectRepository(Todo)
     private todosRepository: Repository<Todo>,
+    private activityLogsService: ActivityLogsService,
   ) {}
 
   async findAll(userId: string, date: Date): Promise<Todo[]> {
@@ -32,7 +36,18 @@ export class TodosService {
     createTodoDto.dueDate = dueDate;
 
     const todo = this.todosRepository.create(createTodoDto);
-    return this.todosRepository.save(todo);
+    const savedTodo = await this.todosRepository.save(todo);
+
+    // Log the creation
+    await this.activityLogsService.createLog({
+      userId: savedTodo.userId,
+      actionType: ActionType.CREATE,
+      entityType: EntityType.TODO,
+      entityId: savedTodo.id,
+      entityTitle: savedTodo.title,
+    });
+
+    return savedTodo;
   }
 
   async update(
@@ -48,6 +63,9 @@ export class TodosService {
       throw new NotFoundException('Todo not found');
     }
 
+    const previousCompleted = todo.completed;
+    const previousDueDate = todo.dueDate;
+
     if (updateTodoDto.completed !== undefined) {
       todo.completed = updateTodoDto.completed;
     }
@@ -59,6 +77,44 @@ export class TodosService {
       todo.dueDate = dueDate;
     }
 
-    return this.todosRepository.save(todo);
+    const savedTodo = await this.todosRepository.save(todo);
+
+    // Log completion status change
+    if (
+      updateTodoDto.completed !== undefined &&
+      previousCompleted !== savedTodo.completed
+    ) {
+      await this.activityLogsService.createLog({
+        userId: savedTodo.userId,
+        actionType: ActionType.UPDATE_COMPLETED,
+        entityType: EntityType.TODO,
+        entityId: savedTodo.id,
+        entityTitle: savedTodo.title,
+        metadata: {
+          previousValue: previousCompleted,
+          newValue: savedTodo.completed,
+        },
+      });
+    }
+
+    // Log due date change
+    if (
+      updateTodoDto.dueDate !== undefined &&
+      previousDueDate.getTime() !== savedTodo.dueDate.getTime()
+    ) {
+      await this.activityLogsService.createLog({
+        userId: savedTodo.userId,
+        actionType: ActionType.UPDATE_DUE_DATE,
+        entityType: EntityType.TODO,
+        entityId: savedTodo.id,
+        entityTitle: savedTodo.title,
+        metadata: {
+          previousValue: previousDueDate.toISOString(),
+          newValue: savedTodo.dueDate.toISOString(),
+        },
+      });
+    }
+
+    return savedTodo;
   }
 }
