@@ -1,4 +1,4 @@
-import { nestJsConfig } from '@repo/eslint-config/nest-js';
+import { nestJsConfig } from './config/eslint-nest.js';
 
 /** @type {import("eslint").Linter.Config} */
 export default [
