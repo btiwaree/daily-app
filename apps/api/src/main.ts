@@ -25,11 +25,33 @@ async function bootstrap() {
       }),
     );
 
+    // CORS configuration - allow multiple origins for development
+    const allowedOrigins = process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
+      : ['http://localhost:3001', 'http://localhost:3000']; // Default to common dev ports
+
     app.enableCors({
-      origin: 'http://localhost:3001',
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, Postman, etc.)
+        if (!origin) {
+          return callback(null, true);
+        }
+        // Check if origin is in allowed list
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        // In development, allow localhost on any port
+        if (
+          process.env.NODE_ENV !== 'production' &&
+          origin.startsWith('http://localhost:')
+        ) {
+          return callback(null, true);
+        }
+        callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     });
 
     const port = process.env.PORT || 3000;
