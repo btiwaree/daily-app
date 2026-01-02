@@ -21,6 +21,7 @@ import { useCheckInStatus } from '@/hooks/useCheckIn';
 import { useGetTodos } from '@/hooks/useGetTodos';
 import { useUpdateTodo } from '@/hooks/useUpdateTodo';
 import { formatDate, isToday } from '@/utils/date';
+import dayjs from 'dayjs';
 import {
   getLinkTypeBadgeVariant,
   getLinkTypeDisplayName,
@@ -51,9 +52,8 @@ const TodosDashboard = () => {
   const { updateTodoAsync, isUpdating } = useUpdateTodo();
 
   const isDateToday = isToday(date);
-  const today = new Date();
   const { data: checkInStatus, isLoading: isCheckInStatusLoading } =
-    useCheckInStatus(today);
+    useCheckInStatus(date);
 
   const hasCheckedIn = checkInStatus?.hasCheckedIn ?? false;
   const hasCheckedOut = checkInStatus?.hasCheckedOut ?? false;
@@ -290,17 +290,52 @@ const TodosDashboard = () => {
             </div>
           )}
         </div>
-        <Calendar
-          mode="single"
-          defaultMonth={date}
-          selected={date}
-          onSelect={(selectedDate: Date | undefined) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
-          className="border rounded-lg shadow-sm h-fit"
-        />
+        <div className="flex flex-col gap-4">
+          <Calendar
+            mode="single"
+            defaultMonth={date}
+            selected={date}
+            onSelect={(selectedDate: Date | undefined) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
+            className="border rounded-lg shadow-sm h-fit"
+          />
+
+          {/* Check-in/Check-out Times */}
+          <div className="shadow-sm flex flex-col gap-8 mt-8">
+            {isCheckInStatusLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+            ) : checkInStatus ? (
+              <>
+                {checkInStatus.hasCheckedIn && checkInStatus.checkInTime && (
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">
+                      Check-in
+                    </div>
+                    <div className="font-mono text-xl md:text-6xl font-bold tabular-nums tracking-wider text-foreground">
+                      {dayjs(checkInStatus.checkInTime).format('HH:mm')}
+                    </div>
+                  </div>
+                )}
+                {checkInStatus.hasCheckedOut && checkInStatus.checkOutTime && (
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">
+                      Check-out
+                    </div>
+                    <div className="font-mono text-xl md:text-6xl font-bold tabular-nums tracking-wider text-foreground">
+                      {dayjs(checkInStatus.checkOutTime).format('HH:mm')}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
+        </div>
       </div>
 
       {/* Check-in Modal */}
