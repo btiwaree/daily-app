@@ -89,5 +89,6 @@ export const useCheckInStatus = (date?: Date) => {
       });
       return response.data;
     },
+    enabled: !!dateString,
   });
 };
