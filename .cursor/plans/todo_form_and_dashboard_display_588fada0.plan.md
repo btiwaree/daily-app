@@ -84,8 +84,6 @@ Implement a complete todo creation UI with form fields, integrate with Clerk aut
 }
 ```
 
-
-
 ### LinkType Enum Values
 
 - FIGMA

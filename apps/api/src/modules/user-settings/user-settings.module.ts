@@ -6,13 +6,9 @@ import { UserSettingsController } from './user-settings.controller';
 import { ActivityLogsModule } from '../activity-logs/activity-logs.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserSettings]),
-    ActivityLogsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([UserSettings]), ActivityLogsModule],
   controllers: [UserSettingsController],
   providers: [UserSettingsService],
   exports: [UserSettingsService],
 })
 export class UserSettingsModule {}
-

@@ -6,10 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivityLogsModule } from '../activity-logs/activity-logs.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Todo]),
-    ActivityLogsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Todo]), ActivityLogsModule],
   controllers: [TodosController],
   providers: [TodosService],
 })

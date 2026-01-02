@@ -17,7 +17,9 @@ export const useUpdateTodo = () => {
   const updateMutation = useMutation({
     mutationFn: async ({ id, completed, dueDate }: UpdateTodoParams) => {
       // Format date as YYYY-MM-DD to avoid timezone issues
-      const dateString = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : undefined;
+      const dateString = dueDate
+        ? dayjs(dueDate).format('YYYY-MM-DD')
+        : undefined;
       const response = await apiClient.patch(`/todos/${id}`, {
         completed,
         dueDate: dateString,
@@ -44,4 +46,3 @@ export const useUpdateTodo = () => {
     isUpdating: updateMutation.isPending,
   };
 };
-

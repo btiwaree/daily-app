@@ -12,4 +12,3 @@ export const nestConfig = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
 } as const satisfies Config;
-

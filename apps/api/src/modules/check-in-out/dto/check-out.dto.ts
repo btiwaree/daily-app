@@ -19,4 +19,3 @@ export class CheckOutResponseDto {
   })
   incompleteTodos: Todo[];
 }
-

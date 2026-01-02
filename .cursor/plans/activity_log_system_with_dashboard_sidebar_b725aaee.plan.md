@@ -102,8 +102,6 @@ flowchart TD
     H --> I
 ```
 
-
-
 ## Backend Implementation
 
 ### 1. Create ActivityLog Entity
@@ -131,7 +129,7 @@ flowchart TD
 
 - Inject `ActivityLogsService` in constructor
 - Add logging in `create()` method: log CREATE action with todo title
-- Add logging in `update()` method: 
+- Add logging in `update()` method:
 - If `completed` changed: log UPDATE_COMPLETED with before/after values
 - If `dueDate` changed: log UPDATE_DUE_DATE with old/new dates
 
@@ -265,8 +263,6 @@ flowchart TD
   createdAt: Date;
 }
 ```
-
-
 
 ### Sheet Sidebar Design:
 

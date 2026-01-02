@@ -3,7 +3,7 @@ name: Downgrade Next.js to 15.5.7
 overview: Downgrade Next.js from 16.1.1 to 15.5.7, including related dependencies and fixing the broken middleware file. The main changes involve package versions, potential Tailwind CSS v4 to v3 migration, and middleware fixes.
 todos:
   - id: update-package-json
-    content: "Update package.json: downgrade next to 15.5.7, eslint-config-next to 15.5.7"
+    content: 'Update package.json: downgrade next to 15.5.7, eslint-config-next to 15.5.7'
     status: completed
   - id: fix-middleware
     content: Restore middleware.ts - uncomment clerkMiddleware() import and export, remove broken export default middleware line
@@ -77,6 +77,7 @@ export default middleware; // ❌ 'middleware' is not defined
 - Uncomment the `clerkMiddleware` import and export
 - Remove the broken `export default middleware;` line
 - Restore the proper Clerk middleware setup:
+
 ```typescript
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
@@ -88,7 +89,6 @@ export const config = {
   ],
 };
 ```
-
 
 **Note**: Next.js 15.5.7 supports Node.js middleware runtime, which may help with the Clerk Edge Runtime compatibility issue we encountered in Next.js 16.
 

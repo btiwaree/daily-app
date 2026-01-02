@@ -15,18 +15,24 @@ const badgeVariants = cva(
         destructive:
           'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
         outline: 'text-foreground',
-        figma: 'border-transparent bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-        linear: 'border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-        notion: 'border-transparent bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-        slack: 'border-transparent bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-        github: 'border-transparent bg-gray-900 text-white dark:bg-gray-700 dark:text-gray-100',
-        unknown: 'border-transparent bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+        figma:
+          'border-transparent bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+        linear:
+          'border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+        notion:
+          'border-transparent bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
+        slack:
+          'border-transparent bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+        github:
+          'border-transparent bg-gray-900 text-white dark:bg-gray-700 dark:text-gray-100',
+        unknown:
+          'border-transparent bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
       },
     },
     defaultVariants: {
       variant: 'default',
     },
-  }
+  },
 );
 
 export interface BadgeProps
@@ -40,4 +46,3 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants };
-

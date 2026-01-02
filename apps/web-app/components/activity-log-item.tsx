@@ -60,6 +60,7 @@ const getActionDescription = (log: ActivityLog): string => {
 
 export function ActivityLogItem({ log }: ActivityLogItemProps) {
   const timeAgo = dayjs(log.createdAt).fromNow();
+  const isToday = dayjs(log.createdAt).isSame(dayjs(), 'day');
 
   return (
     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent transition-colors">
@@ -70,9 +71,14 @@ export function ActivityLogItem({ log }: ActivityLogItemProps) {
         <p className="text-sm font-medium text-foreground">
           {getActionDescription(log)}
         </p>
-        <p className="text-xs text-muted-foreground mt-0.5">{timeAgo}</p>
+        {isToday ? (
+          <p className="text-xs text-muted-foreground mt-0.5">{timeAgo}</p>
+        ) : (
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {dayjs(log.createdAt).format('MMM D, YYYY h:mm A')}
+          </p>
+        )}
       </div>
     </div>
   );
 }
-

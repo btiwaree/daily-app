@@ -6,7 +6,7 @@ import {
   SignedOut,
 } from '@clerk/nextjs';
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Kalam } from 'next/font/google';
 import './globals.css';
 
 import { ThemeProvider } from '@/components/theme-provider';
@@ -27,6 +27,12 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const kalam = Kalam({
+  weight: ['300', '400', '700'],
+  variable: '--font-kalam',
+  subsets: ['latin'],
+});
+
 export const metadata: Metadata = {
   title: 'My Daily Notes',
   description:
@@ -42,7 +48,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${kalam.variable} antialiased`}
         >
           <ThemeProvider
             attribute="class"
@@ -68,6 +74,11 @@ export default function RootLayout({
                     <Link href="/activity">
                       <Button variant="ghost" size="sm">
                         Activity
+                      </Button>
+                    </Link>
+                    <Link href="/journal">
+                      <Button variant="ghost" size="sm">
+                        Journal
                       </Button>
                     </Link>
                     <Link href="/settings">

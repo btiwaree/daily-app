@@ -7,4 +7,3 @@ export const config = {
   moduleFileExtensions: ['js', 'ts', 'json'],
   testEnvironment: 'jsdom',
 } as const satisfies Config;
-

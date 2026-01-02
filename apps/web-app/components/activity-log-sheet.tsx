@@ -29,9 +29,7 @@ export function ActivityLogSheet({
       <SheetContent side="right" className="w-full sm:max-w-sm">
         <SheetHeader>
           <SheetTitle>Today&apos;s Activity</SheetTitle>
-          <SheetDescription>
-            View all your actions from today
-          </SheetDescription>
+          <SheetDescription>View all your actions from today</SheetDescription>
         </SheetHeader>
 
         <div className="mt-6 space-y-2 max-h-[calc(100vh-120px)] overflow-y-auto">
@@ -60,4 +58,3 @@ export function ActivityLogSheet({
     </Sheet>
   );
 }
-

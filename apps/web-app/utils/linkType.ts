@@ -21,9 +21,12 @@ export function getLinkTypeDisplayName(linkType: string): string {
 }
 
 export function getLinkTypeBadgeVariant(
-  linkType: string
+  linkType: string,
 ): 'figma' | 'linear' | 'notion' | 'slack' | 'github' | 'unknown' {
-  const variants: Record<string, 'figma' | 'linear' | 'notion' | 'slack' | 'github' | 'unknown'> = {
+  const variants: Record<
+    string,
+    'figma' | 'linear' | 'notion' | 'slack' | 'github' | 'unknown'
+  > = {
     [LinkType.FIGMA]: 'figma',
     [LinkType.LINEAR]: 'linear',
     [LinkType.NOTION]: 'notion',
@@ -34,4 +37,3 @@ export function getLinkTypeBadgeVariant(
 
   return variants[linkType] || 'unknown';
 }
-

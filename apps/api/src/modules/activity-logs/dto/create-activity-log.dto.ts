@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ActionType } from '../enums/action-type.enum';
 import { EntityType } from '../enums/entity-type.enum';
@@ -57,4 +63,3 @@ export class CreateActivityLogDto {
   @IsOptional()
   metadata?: Record<string, any>;
 }
-

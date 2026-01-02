@@ -6,4 +6,3 @@ export enum ActionType {
   CHECK_OUT = 'CHECK_OUT',
   UPDATE_SETTINGS = 'UPDATE_SETTINGS',
 }
-

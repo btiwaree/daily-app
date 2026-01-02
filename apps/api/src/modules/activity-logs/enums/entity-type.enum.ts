@@ -3,4 +3,3 @@ export enum EntityType {
   CHECK_IN_OUT = 'CHECK_IN_OUT',
   USER_SETTINGS = 'USER_SETTINGS',
 }
-

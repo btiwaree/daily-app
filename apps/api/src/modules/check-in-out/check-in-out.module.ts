@@ -7,13 +7,9 @@ import { Todo } from '../todos/entities/todos.entities';
 import { ActivityLogsModule } from '../activity-logs/activity-logs.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([CheckInOut, Todo]),
-    ActivityLogsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([CheckInOut, Todo]), ActivityLogsModule],
   controllers: [CheckInOutController],
   providers: [CheckInOutService],
   exports: [CheckInOutService],
 })
 export class CheckInOutModule {}
-

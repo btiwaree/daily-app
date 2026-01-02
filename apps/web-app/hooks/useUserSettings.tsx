@@ -68,4 +68,3 @@ export const useUserSettings = () => {
     isUpdating: updateMutation.isPending,
   };
 };
-

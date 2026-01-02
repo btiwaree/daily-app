@@ -115,7 +115,8 @@ export function CheckOutModal({
           ) : (
             <>
               <div className="text-sm text-muted-foreground mb-4">
-                {remainingTodos.length} todo{remainingTodos.length !== 1 ? 's' : ''} remaining
+                {remainingTodos.length} todo
+                {remainingTodos.length !== 1 ? 's' : ''} remaining
               </div>
               <div className="space-y-3">
                 {incompleteTodos?.map((todo) => {
@@ -136,7 +137,8 @@ export function CheckOutModal({
                             {todo.description}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Due: {formatDate(new Date(todo.dueDate), 'MMM D, YYYY')}
+                            Due:{' '}
+                            {formatDate(new Date(todo.dueDate), 'MMM D, YYYY')}
                           </p>
                         </div>
                         {!isHandled && (
@@ -185,4 +187,3 @@ export function CheckOutModal({
     </Dialog>
   );
 }
-

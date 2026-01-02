@@ -3,27 +3,25 @@ import dayjs from 'dayjs';
 
 import { useApiClient } from '@/api-client';
 
-export interface ActivityLog {
+export interface JournalEntry {
   id: string;
   userId: string;
-  actionType: string;
-  entityType: string;
-  entityId: string | null;
-  entityTitle: string | null;
-  metadata: Record<string, any> | null;
+  description: string;
+  date: string;
   createdAt: string;
+  deletedAt: string | null;
 }
 
-export const useActivityLogs = (date?: Date) => {
+export const useJournalEntries = (date?: Date) => {
   const apiClient = useApiClient();
   const dateString = date
     ? dayjs(date).format('YYYY-MM-DD')
     : dayjs().format('YYYY-MM-DD');
 
-  return useQuery<ActivityLog[]>({
-    queryKey: ['activityLogs', dateString],
+  return useQuery<JournalEntry[]>({
+    queryKey: ['journalEntries', dateString],
     queryFn: async () => {
-      const response = await apiClient.get('/activity-logs', {
+      const response = await apiClient.get('/journal', {
         params: { date: dateString },
       });
       return response.data;

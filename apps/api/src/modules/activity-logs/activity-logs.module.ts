@@ -11,4 +11,3 @@ import { ActivityLog } from './entities/activity-log.entity';
   exports: [ActivityLogsService],
 })
 export class ActivityLogsModule {}
-

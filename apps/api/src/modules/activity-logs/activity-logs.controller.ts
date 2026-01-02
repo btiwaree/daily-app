@@ -42,4 +42,3 @@ export class ActivityLogsController {
     return this.activityLogsService.getLogsByUserAndDate(userId, date);
   }
 }
-

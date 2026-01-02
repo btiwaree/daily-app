@@ -1,8 +1,4 @@
-import {
-  IsBoolean,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateTodoDto {
@@ -24,4 +20,3 @@ export class UpdateTodoDto {
   @IsString()
   dueDate?: string | Date;
 }
-

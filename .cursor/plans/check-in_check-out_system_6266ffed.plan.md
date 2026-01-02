@@ -72,7 +72,7 @@ flowchart TD
     MarkComplete --> CheckInComplete[Check-in Complete]
     MoveToday --> CheckInComplete
     CheckInComplete -->|Unblur| Dashboard[Dashboard Access]
-    
+
     User -->|Evening| CheckOut[Check-out Flow]
     CheckOut -->|Get Today Todos| TodayTodos[Today's Todos]
     TodayTodos -->|User Action| MarkComplete2[Mark as Complete]
@@ -80,12 +80,10 @@ flowchart TD
     MarkComplete2 --> CheckOutComplete[Check-out Complete]
     MoveTomorrow --> CheckOutComplete
     CheckOutComplete -->|Remove Red Border| Dashboard2[Dashboard Normal]
-    
+
     User -->|Settings| UserSettings[User Settings]
     UserSettings -->|Set Times| PreferredTimes[Preferred Check-in/out Times]
 ```
-
-
 
 ## Backend Implementation
 
