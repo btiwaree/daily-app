@@ -75,7 +75,7 @@ export const useCheckIn = () => {
   };
 };
 
-export const useCheckInStatus = (date?: Date) => {
+export const useCheckInStatus = (date = new Date()) => {
   const apiClient = useApiClient();
   const dateString = date
     ? dayjs(date).format('YYYY-MM-DD')

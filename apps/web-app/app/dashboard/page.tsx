@@ -5,14 +5,14 @@ import {
   CheckIcon,
   ExternalLinkIcon,
   LogOutIcon,
-  ActivityIcon,
 } from 'lucide-react';
 import * as React from 'react';
 
+import { CheckInBlock } from '@/components/check-in-block';
 import { CheckInModal } from '@/components/check-in-modal';
+import { CheckOutBlock } from '@/components/check-out-block';
 import { CheckOutModal } from '@/components/check-out-modal';
 import { NewTodo } from '@/components/new-todo';
-import { ActivityLogSheet } from '@/components/activity-log-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -21,7 +21,6 @@ import { useCheckInStatus } from '@/hooks/useCheckIn';
 import { useGetTodos } from '@/hooks/useGetTodos';
 import { useUpdateTodo } from '@/hooks/useUpdateTodo';
 import { formatDate, isToday, isWeekend } from '@/utils/date';
-import dayjs from 'dayjs';
 import {
   getLinkTypeBadgeVariant,
   getLinkTypeDisplayName,
@@ -41,11 +40,10 @@ interface Todo {
 }
 
 const TodosDashboard = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [date, setDate] = React.useState<Date>(new Date());
   const { data: todos, isLoading: isTodosLoading } = useGetTodos(date);
   const [checkInModalOpen, setCheckInModalOpen] = React.useState(false);
   const [checkOutModalOpen, setCheckOutModalOpen] = React.useState(false);
-  const [activityLogSheetOpen, setActivityLogSheetOpen] = React.useState(false);
   const [updatingTodoId, setUpdatingTodoId] = React.useState<string | null>(
     null,
   );
@@ -300,38 +298,8 @@ const TodosDashboard = () => {
             className="border rounded-lg shadow-sm h-fit"
           />
 
-          {/* Check-in/Check-out Times */}
-          <div className="shadow-sm flex flex-col gap-4">
-            {isCheckInStatusLoading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-              </div>
-            ) : checkInStatus ? (
-              <>
-                {checkInStatus.hasCheckedIn && checkInStatus.checkInTime && (
-                  <div>
-                    <div className="text-xs text-muted-foreground mb-1">
-                      Check-in
-                    </div>
-                    <div className="font-mono text-xl md:text-6xl font-bold tabular-nums tracking-wider text-foreground">
-                      {dayjs(checkInStatus.checkInTime).format('HH:mm')}
-                    </div>
-                  </div>
-                )}
-                {checkInStatus.hasCheckedOut && checkInStatus.checkOutTime && (
-                  <div>
-                    <div className="text-xs text-muted-foreground mb-1">
-                      Check-out
-                    </div>
-                    <div className="font-mono text-xl md:text-6xl font-bold tabular-nums tracking-wider text-foreground">
-                      {dayjs(checkInStatus.checkOutTime).format('HH:mm')}
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : null}
-          </div>
+          <CheckInBlock selectedDate={date} />
+          <CheckOutBlock selectedDate={date} />
         </div>
       </div>
 
