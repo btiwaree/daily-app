@@ -20,7 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useCheckInStatus } from '@/hooks/useCheckIn';
 import { useGetTodos } from '@/hooks/useGetTodos';
 import { useUpdateTodo } from '@/hooks/useUpdateTodo';
-import { formatDate, isToday } from '@/utils/date';
+import { formatDate, isToday, isWeekend } from '@/utils/date';
 import dayjs from 'dayjs';
 import {
   getLinkTypeBadgeVariant,
@@ -52,6 +52,7 @@ const TodosDashboard = () => {
   const { updateTodoAsync, isUpdating } = useUpdateTodo();
 
   const isDateToday = isToday(date);
+  const isDateWeekend = isWeekend(date);
   const { data: checkInStatus, isLoading: isCheckInStatusLoading } =
     useCheckInStatus(date);
 
@@ -66,10 +67,15 @@ const TodosDashboard = () => {
   }, [isDateToday]);
 
   React.useEffect(() => {
-    if (!isCheckInStatusLoading && !hasCheckedIn && isDateToday) {
+    if (
+      !isCheckInStatusLoading &&
+      !hasCheckedIn &&
+      isDateToday &&
+      !isDateWeekend
+    ) {
       setCheckInModalOpen(true);
     }
-  }, [isCheckInStatusLoading, hasCheckedIn, isDateToday]);
+  }, [isCheckInStatusLoading, hasCheckedIn, isDateToday, isDateWeekend]);
 
   const handleCheckInComplete = () => {
     setCheckInModalOpen(false);
@@ -99,7 +105,7 @@ const TodosDashboard = () => {
   return (
     <div className="flex flex-col justify-center gap-4 p-4 relative">
       {/* Blur overlay when check-in not complete */}
-      {!hasCheckedIn && isDateToday && (
+      {!hasCheckedIn && isDateToday && !isDateWeekend && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 pointer-events-none" />
       )}
 
@@ -113,15 +119,6 @@ const TodosDashboard = () => {
               </span>
             </h2>
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setActivityLogSheetOpen(true)}
-                className="flex items-center gap-2"
-                aria-label="View activity log"
-              >
-                <ActivityIcon className="h-4 w-4" />
-              </Button>
               <NewTodo />
               {/* Check-out button */}
               {hasCheckedIn && !hasCheckedOut && isDateToday && (
@@ -304,7 +301,7 @@ const TodosDashboard = () => {
           />
 
           {/* Check-in/Check-out Times */}
-          <div className="shadow-sm flex flex-col gap-8 mt-8">
+          <div className="shadow-sm flex flex-col gap-4">
             {isCheckInStatusLoading ? (
               <div className="space-y-4">
                 <Skeleton className="h-16 w-full" />
@@ -350,12 +347,6 @@ const TodosDashboard = () => {
         open={checkOutModalOpen}
         onOpenChange={setCheckOutModalOpen}
         onComplete={handleCheckOutComplete}
-      />
-
-      {/* Activity Log Sheet */}
-      <ActivityLogSheet
-        open={activityLogSheetOpen}
-        onOpenChange={setActivityLogSheetOpen}
       />
     </div>
   );

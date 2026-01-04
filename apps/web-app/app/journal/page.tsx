@@ -48,7 +48,7 @@ export default function JournalPage() {
   return (
     <div className="flex flex-col justify-center gap-4 p-4">
       <div className="flex items-start gap-8 p-4">
-        <div className="flex-1 p-4 border rounded-sm shadow-sm">
+        <div className="flex-1 p-4">
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">
               Journal{' '}
@@ -73,7 +73,7 @@ export default function JournalPage() {
               onChange={(e) => setDescription(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write your thoughts..."
-              className="font-kalam text-xl md:text-3xl leading-[2.5rem] min-h-[400px] resize-none mb-4 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent p-0"
+              className="font-kalam text-xl md:text-3xl leading-10 min-h-100 resize-none mb-4 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent p-0"
               style={{
                 backgroundImage: `repeating-linear-gradient(
                   transparent,
@@ -87,7 +87,7 @@ export default function JournalPage() {
             />
             <div className="flex justify-between items-center">
               <p className="text-xs text-muted-foreground">
-                Press Cmd/Ctrl + Enter to save
+                Press Cmd + Enter to save
               </p>
               <Button type="submit" disabled={!description.trim() || isPending}>
                 {isPending ? 'Adding...' : 'Add Entry'}

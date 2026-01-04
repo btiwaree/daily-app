@@ -6,6 +6,8 @@ dayjs.extend(utc);
 dayjs.extend(isTodayPlugin);
 
 export const isToday = (date: Date | undefined) => dayjs(date).isToday();
+export const isWeekend = (date: Date | undefined) =>
+  dayjs(date).day() === 0 || dayjs(date).day() === 6;
 
 export const formatDate = (date: Date | undefined, format: string) => {
   if (!date) return '';
