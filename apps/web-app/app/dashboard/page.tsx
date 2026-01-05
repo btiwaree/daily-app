@@ -25,6 +25,7 @@ import {
   getLinkTypeBadgeVariant,
   getLinkTypeDisplayName,
 } from '@/utils/linkType';
+import dayjs from 'dayjs';
 
 interface Todo {
   id: string;
@@ -274,8 +275,7 @@ const TodosDashboard = () => {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <CalendarIcon className="h-4 w-4" />
                         <span>
-                          Due:{' '}
-                          {formatDate(new Date(todo.dueDate), 'MMM D, YYYY')}
+                          Due: {dayjs(todo.dueDate).format('MMM D, YYYY')}
                         </span>
                       </div>
                     </div>

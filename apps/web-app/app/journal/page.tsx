@@ -10,10 +10,12 @@ import { useAddJournalEntry } from '@/hooks/useAddJournalEntry';
 import { JournalEntryItem } from '@/components/journal-entry';
 import { formatDate, isToday } from '@/utils/date';
 import dayjs from 'dayjs';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function JournalPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [description, setDescription] = React.useState('');
+  const [isFormCollapsed, setIsFormCollapsed] = React.useState(true);
   const { data: entries, isLoading } = useJournalEntries(date);
   const { mutate: addEntry, isPending } = useAddJournalEntry();
   const isDateToday = isToday(date);
@@ -34,6 +36,7 @@ export default function JournalPage() {
       {
         onSuccess: () => {
           setDescription('');
+          setIsFormCollapsed(true);
         },
       },
     );
@@ -50,7 +53,15 @@ export default function JournalPage() {
       <div className="flex items-start gap-8 p-4">
         <div className="flex-1 p-4">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">
+            <h2
+              className="text-2xl font-bold mb-2 cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2"
+              onClick={() => setIsFormCollapsed(!isFormCollapsed)}
+            >
+              {isFormCollapsed ? (
+                <ChevronDown className="h-5 w-5" />
+              ) : (
+                <ChevronUp className="h-5 w-5" />
+              )}
               Journal{' '}
               {isDateToday ? (
                 <span className="text-muted-foreground font-normal">
@@ -62,38 +73,45 @@ export default function JournalPage() {
                 </span>
               )}
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Write your thoughts, ideas, or anything you want to remember...
-            </p>
+            {!isFormCollapsed && (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Write your thoughts, ideas, or anything you want to
+                  remember...
+                </p>
+                <form onSubmit={handleSubmit} className="mt-4">
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Write your thoughts..."
+                    className="font-kalam text-xl md:text-3xl leading-10 min-h-100 resize-none mb-4 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent p-0"
+                    style={{
+                      backgroundImage: `repeating-linear-gradient(
+                        transparent,
+                        transparent 2.4rem,
+                        hsl(var(--border)) 2.4rem,
+                        hsl(var(--border)) 2.5rem
+                      )`,
+                      backgroundSize: '100% 2.5rem',
+                    }}
+                    disabled={isPending}
+                  />
+                  <div className="flex justify-between items-center">
+                    <p className="text-xs text-muted-foreground">
+                      Press Cmd + Enter to save
+                    </p>
+                    <Button
+                      type="submit"
+                      disabled={!description.trim() || isPending}
+                    >
+                      {isPending ? 'Adding...' : 'Add Entry'}
+                    </Button>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
-
-          <form onSubmit={handleSubmit} className="mb-8">
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Write your thoughts..."
-              className="font-kalam text-xl md:text-3xl leading-10 min-h-100 resize-none mb-4 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent p-0"
-              style={{
-                backgroundImage: `repeating-linear-gradient(
-                  transparent,
-                  transparent 2.4rem,
-                  hsl(var(--border)) 2.4rem,
-                  hsl(var(--border)) 2.5rem
-                )`,
-                backgroundSize: '100% 2.5rem',
-              }}
-              disabled={isPending}
-            />
-            <div className="flex justify-between items-center">
-              <p className="text-xs text-muted-foreground">
-                Press Cmd + Enter to save
-              </p>
-              <Button type="submit" disabled={!description.trim() || isPending}>
-                {isPending ? 'Adding...' : 'Add Entry'}
-              </Button>
-            </div>
-          </form>
 
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4">Entries</h3>

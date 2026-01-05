@@ -47,7 +47,7 @@ export const CheckOutBlock = ({
 const CheckOutBlockWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col gap-1">
-      <div className="text-xs text-muted-foreground">Check-in</div>
+      <div className="text-xs text-muted-foreground">Check Out</div>
       {children}
     </div>
   );
