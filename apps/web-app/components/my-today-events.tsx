@@ -155,7 +155,7 @@ export const MyTodayEvents = ({
                         </p>
                       )}
                       {event.location && (
-                        <p className="text-xs text-muted-foreground mt-1 max-w-32 truncate">
+                        <p className="text-xs text-muted-foreground mt-1 max-w-40 truncate">
                           📍 {event.location}
                         </p>
                       )}
