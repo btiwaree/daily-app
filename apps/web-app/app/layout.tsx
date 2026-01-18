@@ -94,7 +94,7 @@ export default function RootLayout({
                 </SignedIn>
               </header>
               <main className="flex-1 overflow-auto">{children}</main>
-              <footer className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0">
+              <footer className="flex items-center justify-end h-16 gap-4 py-4 px-6 border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0">
                 <Link href="/privacy-policy">Privacy Policy</Link>
               </footer>
             </Providers>

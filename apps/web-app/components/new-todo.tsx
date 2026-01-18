@@ -80,8 +80,8 @@ export const NewTodo = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="icon-lg">
-          <Plus />
+        <Button size="sm">
+          <Plus /> New Todo
         </Button>
       </SheetTrigger>
       <SheetContent className="p-4 overflow-y-scroll">

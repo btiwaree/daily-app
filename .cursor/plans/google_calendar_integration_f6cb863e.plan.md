@@ -83,8 +83,6 @@ flowchart TD
     EventsEndpoint --> Frontend
 ```
 
-
-
 ## Implementation Steps
 
 ### 1. Backend: Dependencies & Configuration

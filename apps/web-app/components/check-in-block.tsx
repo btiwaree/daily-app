@@ -1,7 +1,8 @@
 import { useCheckInStatus } from '@/hooks/useCheckIn';
+import { isWeekend } from '@/utils/date';
+import { isFuture } from 'date-fns';
 import dayjs from 'dayjs';
 import { Skeleton } from './ui/skeleton';
-import { isWeekend } from '@/utils/date';
 
 export const CheckInBlock = ({
   selectedDate = new Date(),
@@ -11,8 +12,9 @@ export const CheckInBlock = ({
   const { data: checkInStatus, isLoading: isCheckInStatusLoading } =
     useCheckInStatus(selectedDate);
   const isWeekendDate = isWeekend(selectedDate);
+  const isDateInFuture = isFuture(selectedDate);
 
-  if (isWeekendDate) {
+  if (isWeekendDate || isDateInFuture) {
     return null;
   }
 

@@ -23,6 +23,7 @@ export interface CalendarEvent {
   location?: string;
   htmlLink?: string;
   meetLink?: string;
+  numParticipants?: number;
 }
 
 @Injectable()
@@ -76,6 +77,9 @@ export class GoogleCalendarService {
             meetLink = event.hangoutLink;
           }
 
+          // get number of participants
+          const numParticipants = event.attendees?.length || 0;
+
           return {
             id: event.id || '',
             summary: event.summary || 'No title',
@@ -93,6 +97,7 @@ export class GoogleCalendarService {
             location: event.location || undefined,
             htmlLink: event.htmlLink || undefined,
             meetLink,
+            numParticipants,
           };
         },
       );

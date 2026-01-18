@@ -25,6 +25,7 @@ export interface CalendarEvent {
   location?: string;
   htmlLink?: string;
   meetLink?: string;
+  numParticipants: number;
 }
 
 interface ListEventsParams {
