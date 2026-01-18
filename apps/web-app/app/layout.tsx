@@ -94,6 +94,10 @@ export default function RootLayout({
                 </SignedIn>
               </header>
               {children}
+
+              <footer className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-t border-neutral-200 dark:border-neutral-800">
+                <Link href="/privacy-policy">Privacy Policy</Link>
+              </footer>
             </Providers>
           </ThemeProvider>
         </body>
