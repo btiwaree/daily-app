@@ -82,7 +82,7 @@ export default function JournalPage() {
               ) : (
                 <Minus className="h-5 w-5" />
               )}
-              Add Journal{' '}
+              Add Entry{' '}
               {isDateToday ? (
                 <span className="text-muted-foreground font-normal">
                   (Today)
@@ -126,7 +126,7 @@ export default function JournalPage() {
           </div>
 
           <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-4">Journal Entries</h3>
+            <h3 className="text-lg font-semibold mb-4">Your Journal Entries</h3>
             {isLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
