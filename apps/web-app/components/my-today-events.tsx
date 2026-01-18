@@ -63,7 +63,7 @@ export const MyTodayEvents = ({
         )}
       </button>
       {isEventsExpanded && (
-        <div className="p-4 pt-0 space-y-2 max-h-100 overflow-y-auto">
+        <div className="p-4 pt-0 space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
           {isEventsLoading ? (
             <div className="space-y-2">
               {[1, 2].map((i) => (
