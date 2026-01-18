@@ -8,6 +8,8 @@ import {
   ChevronDown,
   ChevronUp,
   ExternalLinkIcon,
+  Presentation,
+  Timer,
 } from 'lucide-react';
 import React from 'react';
 import { Skeleton } from './ui/skeleton';
@@ -45,19 +47,44 @@ export const MyTodayEvents = ({
   // Format event time for display
   const formatEventTime = (event: {
     start: { dateTime?: string; date?: string };
-  }) => {
+    end: { dateTime?: string; date?: string };
+  }): { startTime: string; duration: string | null } => {
     if (event.start.dateTime) {
-      const date = new Date(event.start.dateTime);
-      return date.toLocaleTimeString('en-US', {
+      const startDate = new Date(event.start.dateTime);
+      const startTime = startDate.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
       });
+
+      // Calculate duration if end time is available
+      if (event.end.dateTime) {
+        const endDate = new Date(event.end.dateTime);
+        const durationMs = endDate.getTime() - startDate.getTime();
+        const durationMinutes = Math.round(durationMs / (1000 * 60));
+
+        let duration: string;
+        if (durationMinutes < 60) {
+          duration = `${durationMinutes}m`;
+        } else {
+          const hours = Math.floor(durationMinutes / 60);
+          const minutes = durationMinutes % 60;
+          if (minutes === 0) {
+            duration = `${hours}h`;
+          } else {
+            duration = `${hours}h ${minutes}m`;
+          }
+        }
+
+        return { startTime, duration };
+      }
+
+      return { startTime, duration: null };
     }
     if (event.start.date) {
-      return 'All day';
+      return { startTime: 'All day', duration: null };
     }
-    return '';
+    return { startTime: '', duration: null };
   };
 
   return (
@@ -68,7 +95,7 @@ export const MyTodayEvents = ({
       >
         <div className="flex items-center gap-2">
           <CalendarIcon className="h-5 w-5" />
-          <h3 className="text-lg font-semibold">Today's Calendar Events</h3>
+          <h3 className="text-lg font-semibold">Your Meetings</h3>
         </div>
         {isEventsExpanded ? (
           <ChevronUp className="h-5 w-5" />
@@ -77,7 +104,7 @@ export const MyTodayEvents = ({
         )}
       </button>
       {isEventsExpanded && (
-        <div className="p-4 pt-0 space-y-2 max-h-[400px] overflow-y-auto">
+        <div className="p-4 pt-0 space-y-2 max-h-100 overflow-y-auto">
           {isEventsLoading ? (
             <div className="space-y-2">
               {[1, 2].map((i) => (
@@ -97,9 +124,27 @@ export const MyTodayEvents = ({
                   <div className="flex items-start justify-between gap-3">
                     <div className="">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm text-muted-foreground">
-                          {formatEventTime(event)}
-                        </span>
+                        {(() => {
+                          const { startTime, duration } =
+                            formatEventTime(event);
+                          return (
+                            <>
+                              <span className="text-sm text-muted-foreground font-medium">
+                                {startTime}
+                              </span>
+                              {duration && (
+                                <>
+                                  <span className="text-xs text-muted-foreground/70">
+                                    <Timer size={16} />
+                                  </span>
+                                  <span className="text-sm text-muted-foreground font-medium">
+                                    {duration}
+                                  </span>
+                                </>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                       <h4 className="font-semibold text-sm mb-1">
                         {event.summary}
@@ -115,15 +160,15 @@ export const MyTodayEvents = ({
                         </p>
                       )}
                     </div>
-                    {event.htmlLink && (
+                    {event.meetLink && (
                       <a
-                        href={event.htmlLink}
+                        href={event.meetLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors shrink-0"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <ExternalLinkIcon className="h-3 w-3" />
+                        <Presentation size={16} />
                       </a>
                     )}
                   </div>

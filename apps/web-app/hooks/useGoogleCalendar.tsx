@@ -24,6 +24,7 @@ export interface CalendarEvent {
   };
   location?: string;
   htmlLink?: string;
+  meetLink?: string;
 }
 
 interface ListEventsParams {

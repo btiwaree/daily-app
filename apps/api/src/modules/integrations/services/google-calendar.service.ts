@@ -22,6 +22,7 @@ export interface CalendarEvent {
   };
   location?: string;
   htmlLink?: string;
+  meetLink?: string;
 }
 
 @Injectable()
@@ -59,23 +60,41 @@ export class GoogleCalendarService {
 
       // Normalize events to our interface
       const events: CalendarEvent[] = (response.data.items || []).map(
-        (event) => ({
-          id: event.id || '',
-          summary: event.summary || 'No title',
-          description: event.description || undefined,
-          start: {
-            dateTime: event.start?.dateTime || undefined,
-            date: event.start?.date || undefined,
-            timeZone: event.start?.timeZone || undefined,
-          },
-          end: {
-            dateTime: event.end?.dateTime || undefined,
-            date: event.end?.date || undefined,
-            timeZone: event.end?.timeZone || undefined,
-          },
-          location: event.location || undefined,
-          htmlLink: event.htmlLink || undefined,
-        }),
+        (event) => {
+          // Extract Google Meet link from conferenceData
+          let meetLink: string | undefined;
+          if (event.conferenceData?.entryPoints) {
+            const videoEntryPoint = event.conferenceData.entryPoints.find(
+              (entry) => entry.entryPointType === 'video',
+            );
+            if (videoEntryPoint?.uri) {
+              meetLink = videoEntryPoint.uri;
+            }
+          }
+          // Fallback to hangoutLink if available (deprecated but still used)
+          if (!meetLink && event.hangoutLink) {
+            meetLink = event.hangoutLink;
+          }
+
+          return {
+            id: event.id || '',
+            summary: event.summary || 'No title',
+            description: event.description || undefined,
+            start: {
+              dateTime: event.start?.dateTime || undefined,
+              date: event.start?.date || undefined,
+              timeZone: event.start?.timeZone || undefined,
+            },
+            end: {
+              dateTime: event.end?.dateTime || undefined,
+              date: event.end?.date || undefined,
+              timeZone: event.end?.timeZone || undefined,
+            },
+            location: event.location || undefined,
+            htmlLink: event.htmlLink || undefined,
+            meetLink,
+          };
+        },
       );
 
       return events;
