@@ -16,7 +16,7 @@ export function JournalEntryItem({ entry }: JournalEntryProps) {
 
   return (
     <div className="mb-6 pb-6 border-b last:border-b-0 last:mb-0">
-      <p className="font-kalam text-lg leading-relaxed text-foreground whitespace-pre-wrap">
+      <p className="font-kalam text-2xl leading-relaxed text-foreground whitespace-pre-wrap">
         {entry.description}
       </p>
       <p className="text-xs text-muted-foreground mt-2">{timeAgo}</p>

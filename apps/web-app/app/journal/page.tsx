@@ -109,7 +109,7 @@ export default function JournalPage() {
                     className="font-kalam text-2xl md:text-3xl leading-10 min-h-100 resize-none p-4 border-0 shadow-none bg-transparent"
                     disabled={isPending}
                   />
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mt-4">
                     <p className="text-xs text-muted-foreground">
                       Press Cmd + Enter to save
                     </p>
