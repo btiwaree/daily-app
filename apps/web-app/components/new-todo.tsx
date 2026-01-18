@@ -80,11 +80,11 @@ export const NewTodo = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="icon-sm">
+        <Button size="icon-lg">
           <Plus />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-4">
+      <SheetContent className="p-4 overflow-y-scroll">
         <SheetHeader>
           <SheetTitle>New Todo</SheetTitle>
         </SheetHeader>
@@ -136,6 +136,9 @@ export const NewTodo = () => {
                   selected={field.value}
                   onSelect={field.onChange}
                   className="rounded-md border"
+                  classNames={{
+                    root: 'w-full',
+                  }}
                 />
               )}
             />

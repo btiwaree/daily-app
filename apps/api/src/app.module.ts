@@ -11,6 +11,7 @@ import { CheckInOutModule } from '@/modules/check-in-out/check-in-out.module';
 import { UserSettingsModule } from '@/modules/user-settings/user-settings.module';
 import { ActivityLogsModule } from '@/modules/activity-logs/activity-logs.module';
 import { JournalModule } from '@/modules/journal/journal.module';
+import { IntegrationsModule } from '@/modules/integrations/integrations.module';
 import { ClerkClientProvider } from '@/providers/clerk-client.provider';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,6 +22,7 @@ import { CheckInOut } from './modules/check-in-out/entities/check-in-out.entity'
 import { UserSettings } from './modules/user-settings/entities/user-settings.entity';
 import { ActivityLog } from './modules/activity-logs/entities/activity-log.entity';
 import { Journal } from './modules/journal/entities/journal.entity';
+import { OAuthIntegration } from './modules/integrations/entities/oauth-integration.entity';
 import { UserThrottlerGuard } from './guards/user-throttler.guard';
 
 @Module({
@@ -43,6 +45,7 @@ import { UserThrottlerGuard } from './guards/user-throttler.guard';
     UserSettingsModule,
     ActivityLogsModule,
     JournalModule,
+    IntegrationsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -50,7 +53,14 @@ import { UserThrottlerGuard } from './guards/user-throttler.guard';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Todo, CheckInOut, UserSettings, ActivityLog, Journal],
+      entities: [
+        Todo,
+        CheckInOut,
+        UserSettings,
+        ActivityLog,
+        Journal,
+        OAuthIntegration,
+      ],
       synchronize: true,
       retryAttempts: 3,
       retryDelay: 3000,

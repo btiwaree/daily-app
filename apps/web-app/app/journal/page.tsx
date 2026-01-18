@@ -10,7 +10,13 @@ import { useAddJournalEntry } from '@/hooks/useAddJournalEntry';
 import { JournalEntryItem } from '@/components/journal-entry';
 import { formatDate, isToday } from '@/utils/date';
 import dayjs from 'dayjs';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
+import {
+  MiniCalendar,
+  MiniCalendarNavigation,
+  MiniCalendarDays,
+  MiniCalendarDay,
+} from '@/components/ui/mini-calendar';
 
 export default function JournalPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -50,19 +56,33 @@ export default function JournalPage() {
 
   return (
     <div className="flex flex-col justify-center gap-4 p-4">
-      <div className="flex items-start gap-8 p-4">
-        <div className="flex-1 p-4">
+      <MiniCalendar
+        className="md:hidden flex justify-center"
+        onValueChange={(selectedDate) => {
+          if (selectedDate) {
+            setDate(selectedDate);
+          }
+        }}
+      >
+        <MiniCalendarNavigation direction="prev" />
+        <MiniCalendarDays>
+          {(date) => <MiniCalendarDay date={date} key={date.toISOString()} />}
+        </MiniCalendarDays>
+        <MiniCalendarNavigation direction="next" />
+      </MiniCalendar>
+      <div className="flex items-start gap-8 mt-4">
+        <div className="flex-1">
           <div className="mb-6">
             <h2
               className="text-2xl font-bold mb-2 cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2"
               onClick={() => setIsFormCollapsed(!isFormCollapsed)}
             >
               {isFormCollapsed ? (
-                <ChevronDown className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
               ) : (
-                <ChevronUp className="h-5 w-5" />
+                <Minus className="h-5 w-5" />
               )}
-              Journal{' '}
+              Add Journal{' '}
               {isDateToday ? (
                 <span className="text-muted-foreground font-normal">
                   (Today)
@@ -81,20 +101,12 @@ export default function JournalPage() {
                 </p>
                 <form onSubmit={handleSubmit} className="mt-4">
                   <Textarea
+                    name="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Write your thoughts..."
-                    className="font-kalam text-xl md:text-3xl leading-10 min-h-100 resize-none mb-4 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent p-0"
-                    style={{
-                      backgroundImage: `repeating-linear-gradient(
-                        transparent,
-                        transparent 2.4rem,
-                        hsl(var(--border)) 2.4rem,
-                        hsl(var(--border)) 2.5rem
-                      )`,
-                      backgroundSize: '100% 2.5rem',
-                    }}
+                    className="font-kalam text-2xl md:text-3xl leading-10 min-h-100 resize-none p-4 border-0 shadow-none bg-transparent"
                     disabled={isPending}
                   />
                   <div className="flex justify-between items-center">
@@ -114,7 +126,7 @@ export default function JournalPage() {
           </div>
 
           <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-4">Entries</h3>
+            <h3 className="text-lg font-semibold mb-4">Journal Entries</h3>
             {isLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
@@ -151,7 +163,7 @@ export default function JournalPage() {
               setDate(selectedDate);
             }
           }}
-          className="border rounded-lg shadow-sm h-fit"
+          className="border rounded-lg shadow-sm h-fit hidden md:block"
         />
       </div>
     </div>

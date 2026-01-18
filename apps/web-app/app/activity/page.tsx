@@ -6,6 +6,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useActivityLogs } from '@/hooks/useActivityLogs';
 import { ActivityLogItem } from '@/components/activity-log-item';
 import { formatDate, isToday } from '@/utils/date';
+import {
+  MiniCalendar,
+  MiniCalendarNavigation,
+  MiniCalendarDays,
+  MiniCalendarDay,
+} from '@/components/ui/mini-calendar';
 
 export default function ActivityPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -14,6 +20,20 @@ export default function ActivityPage() {
 
   return (
     <div className="flex flex-col justify-center gap-4 p-4">
+      <MiniCalendar
+        className="md:hidden flex justify-center"
+        onValueChange={(selectedDate) => {
+          if (selectedDate) {
+            setDate(selectedDate);
+          }
+        }}
+      >
+        <MiniCalendarNavigation direction="prev" />
+        <MiniCalendarDays>
+          {(date) => <MiniCalendarDay date={date} key={date.toISOString()} />}
+        </MiniCalendarDays>
+        <MiniCalendarNavigation direction="next" />
+      </MiniCalendar>
       <div className="flex items-start gap-8 p-4">
         <div className="flex-1 p-4 border rounded-sm shadow-sm">
           <div className="flex justify-between items-center mb-4">
@@ -71,7 +91,7 @@ export default function ActivityPage() {
               setDate(selectedDate);
             }
           }}
-          className="border rounded-lg shadow-sm h-fit"
+          className="border rounded-lg shadow-sm h-fit hidden md:block"
         />
       </div>
     </div>

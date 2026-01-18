@@ -73,8 +73,6 @@ flowchart TD
     J --> B
 ```
 
-
-
 ## Backend Implementation
 
 ### 1. Create Journal Entity
@@ -128,9 +126,9 @@ flowchart TD
 - Create new page component with:
 - Date picker (using existing Calendar component) on the right side
 - Main content area on the left with:
-    - Input area at the top (notepad-style textarea)
-    - List of journal entries below
-    - Empty state when no entries
+  - Input area at the top (notepad-style textarea)
+  - List of journal entries below
+  - Empty state when no entries
 - Handwritten font applied to textarea and entries
 - Minimal, clean design
 
@@ -224,8 +222,6 @@ flowchart TD
   deletedAt: Date | null;
 }
 ```
-
-
 
 ### API Endpoints:
 

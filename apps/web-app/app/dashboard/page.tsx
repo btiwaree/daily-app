@@ -1,21 +1,23 @@
 'use client';
 
-import {
-  CalendarIcon,
-  CheckIcon,
-  ExternalLinkIcon,
-  LogOutIcon,
-} from 'lucide-react';
+import { CheckIcon, ExternalLinkIcon, LogOutIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { CheckInBlock } from '@/components/check-in-block';
 import { CheckInModal } from '@/components/check-in-modal';
 import { CheckOutBlock } from '@/components/check-out-block';
 import { CheckOutModal } from '@/components/check-out-modal';
+import { MyTodayEvents } from '@/components/my-today-events';
 import { NewTodo } from '@/components/new-todo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import {
+  MiniCalendar,
+  MiniCalendarDay,
+  MiniCalendarDays,
+  MiniCalendarNavigation,
+} from '@/components/ui/mini-calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCheckInStatus } from '@/hooks/useCheckIn';
 import { useGetTodos } from '@/hooks/useGetTodos';
@@ -25,7 +27,6 @@ import {
   getLinkTypeBadgeVariant,
   getLinkTypeDisplayName,
 } from '@/utils/linkType';
-import dayjs from 'dayjs';
 
 interface Todo {
   id: string;
@@ -108,18 +109,37 @@ const TodosDashboard = () => {
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 pointer-events-none" />
       )}
 
-      <div className="flex items-start gap-8 p-4">
-        <div className="flex-1 p-4 border rounded-sm shadow-sm relative">
-          <div className="flex justify-between items-center mb-4">
-            <h2>
-              My Todos for{' '}
-              <span className="font-bold">
-                {isDateToday ? 'Today' : formatDate(date, 'MMM D, YYYY')}
-              </span>
-            </h2>
+      {isDateToday && (
+        <MyTodayEvents className="block md:hidden" isDateToday={isDateToday} />
+      )}
+
+      <MiniCalendar
+        className="md:hidden flex justify-center"
+        onValueChange={(selectedDate) => {
+          if (selectedDate) {
+            setDate(selectedDate);
+          }
+        }}
+      >
+        <MiniCalendarNavigation direction="prev" />
+        <MiniCalendarDays>
+          {(date) => <MiniCalendarDay date={date} key={date.toISOString()} />}
+        </MiniCalendarDays>
+        <MiniCalendarNavigation direction="next" />
+      </MiniCalendar>
+
+      <h2>
+        My Todos for{' '}
+        <span className="font-bold">
+          {isDateToday ? 'Today' : formatDate(date, 'MMM D, YYYY')}
+        </span>
+      </h2>
+
+      <div className="flex items-start gap-8">
+        <div className="flex-1 rounded-sm shadow-sm relative">
+          <div className="flex justify-end items-center mb-6">
             <div className="flex items-center gap-2">
               <NewTodo />
-              {/* Check-out button */}
               {hasCheckedIn && !hasCheckedOut && isDateToday && (
                 <Button
                   variant="outline"
@@ -210,7 +230,7 @@ const TodosDashboard = () => {
                     } ${todo.completed ? 'opacity-60' : ''}`}
                   >
                     <div className="flex items-start justify-between mb-3 gap-3">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <div className="flex gap-2 items-center">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -270,22 +290,13 @@ const TodosDashboard = () => {
                     >
                       {todo.description}
                     </p>
-
-                    <div className="flex items-center gap-3 pt-3 border-t">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <CalendarIcon className="h-4 w-4" />
-                        <span>
-                          Due: {dayjs(todo.dueDate).format('MMM D, YYYY')}
-                        </span>
-                      </div>
-                    </div>
                   </div>
                 );
               })}
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex-col gap-4 hidden md:flex">
           <Calendar
             mode="single"
             defaultMonth={date}
@@ -295,8 +306,18 @@ const TodosDashboard = () => {
                 setDate(selectedDate);
               }
             }}
-            className="border rounded-lg shadow-sm h-fit"
+            className="border rounded-lg shadow-sm h-fit w-full"
+            classNames={{
+              root: 'w-full',
+            }}
           />
+
+          {isDateToday && (
+            <MyTodayEvents
+              className="hidden md:block"
+              isDateToday={isDateToday}
+            />
+          )}
 
           <CheckInBlock selectedDate={date} />
           <CheckOutBlock selectedDate={date} />

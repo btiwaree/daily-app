@@ -46,9 +46,9 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning className="h-full">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} ${kalam.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${kalam.variable} antialiased h-full flex flex-col`}
         >
           <ThemeProvider
             attribute="class"
@@ -57,8 +57,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Toaster />
-            <Providers>
-              <header className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-b border-neutral-200 dark:border-neutral-800">
+            <Providers className="flex flex-col h-full">
+              <header className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-b border-neutral-200 dark:border-neutral-800 flex-shrink-0">
                 <SignedOut>
                   <Logo />
                   <div className="flex gap-4">
@@ -93,9 +93,8 @@ export default function RootLayout({
                   </div>
                 </SignedIn>
               </header>
-              {children}
-
-              <footer className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-t border-neutral-200 dark:border-neutral-800">
+              <main className="flex-1 overflow-auto">{children}</main>
+              <footer className="flex items-center justify-between h-16 gap-4 py-4 px-6 border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0">
                 <Link href="/privacy-policy">Privacy Policy</Link>
               </footer>
             </Providers>
